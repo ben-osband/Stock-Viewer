@@ -19,6 +19,9 @@ period_value = ''
 interval_value = ''
 plot_type = ''
 
+#* Draws the graph on the canvas
+# @param canvas the canvas object in the GUI
+# @param figure the graph being drawn on the canvas
 def draw_figure(canvas, figure):
     figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
     figure_canvas_agg.draw()
@@ -45,7 +48,7 @@ layout = [
             '10y',
             'ytd',
             'max'
-        ], font='SYSTEM_DEFAULT', default_value='1y' key='-P_MENU-'),
+        ], default_value='1y', key='-P_MENU-'),
         sg.OptionMenu(values=[
             '1m',
             '2m',
@@ -60,10 +63,10 @@ layout = [
             '1wk',
             '1mo',
             '3mo'
-        ], font='SYSTEM_DEFAULT', default_value='5d', key='-I_MENU-'),
+        ], default_value='5d', key='-I_MENU-'),
         sg.OptionMenu(values=[
             'line'
-        ], font='SYSTEM_DEFAULT', default_value='line', key='-G_MENU-'),
+        ], default_value='line', key='-G_MENU-'),
         sg.Button(button_text='GO', enable_events=True, size=(2, 1), button_color='green', font='SYSTEM_DEFAULT', key='-GO-'),
     ],
     [
