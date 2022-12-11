@@ -5,7 +5,9 @@ This is a python program that creates a graphical interface that allows the user
 * What stock they want to look at
 * The start date and end date of data OR the start date and how long of a period to look at
 * The interval of data points
-* The type of graph
+* The type of graph to plot
+
+---
 
 ## Packages
 
@@ -16,6 +18,8 @@ This is a python program that creates a graphical interface that allows the user
 3. [Matplotlib](https://matplotlib.org/stable/index.html)
     * Used to plot the data obtained from the Yahoo Finance API
 
+---
+
 ## Imports
 
 ```Python
@@ -25,6 +29,8 @@ import PySimpleGUI as sg
 import yfinance as yf
 import matplotlib
 ```
+
+---
 
 ### Import Uses
 
