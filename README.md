@@ -7,8 +7,6 @@ This is a python program that creates a graphical interface that allows the user
 * The interval of data points
 * The type of graph to plot
 
----
-
 ## Packages
 
 1. [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
@@ -17,8 +15,6 @@ This is a python program that creates a graphical interface that allows the user
     * Used to get historical data of stock prices
 3. [Matplotlib](https://matplotlib.org/stable/index.html)
     * Used to plot the data obtained from the Yahoo Finance API
-
----
 
 ## Imports
 
@@ -29,8 +25,6 @@ import PySimpleGUI as sg
 import yfinance as yf
 import matplotlib
 ```
-
----
 
 ### Import Uses
 
