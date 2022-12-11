@@ -1,13 +1,14 @@
 # Benjamin Osband
-# 12/7/2022
-# stock-ticker.py
+# Alexander Sviriduk
+# Shayaan 
+# 12/10/2022
+# stock-chart-viewer.py
 # description
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 import yfinance as yf
-import numpy as np
 import matplotlib
 
 #* Variables to take in data from the GUI and pass into the
@@ -20,7 +21,7 @@ period_value = ''
 interval_value = ''
 plot_type = ''
 
-# Draws the graph on the canvas
+# Draws the graph on the PySimpleGUI graph element
 # @param canvas the canvas object in the GUI
 # @param figure the graph being drawn on the canvas
 def draw_figure(graph, figure):
@@ -164,10 +165,5 @@ while True:
 
         draw_figure(window['-GRAPH-'], fig)
     
-    #if event == '-CLEAR-':
-
-        #plt.clf()
-        #canvas = window['-CANVAS-'].TKCanvas
-        #canvas.delete('all')
 
 window.close()
