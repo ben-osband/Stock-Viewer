@@ -16,7 +16,7 @@ _Note: Branches should be written in all lowercase, have dashes instead of space
 
 To add a branch through the GitHub website, start by going to the main page of the repository and click where it says the number of branches.
 
-![Branches Button](branches-button.png)
+![Branches Button](Images/branches-button.png)
 
 Then click the green **New branch** button, give your new branch a name and a source, and then click **Create branch**
 
