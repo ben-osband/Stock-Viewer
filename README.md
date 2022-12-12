@@ -38,3 +38,7 @@ import matplotlib
     * Used to create the user interface
 4. [yfinance](https://python-yahoofinance.readthedocs.io/en/latest/api.html)
     * Used to get historical data of stock prices
+
+## Making Contributions
+
+* See [Contributing.md](Contributing.md)
