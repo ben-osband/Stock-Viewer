@@ -1,6 +1,6 @@
 # Overview
 
-To make additions to the project, first make sure you are added as a coollaborator and then follow these steps:
+To make additions to the project, first make sure you are added as a collaborator and then follow these steps:
 
 * Add a branch
 * Make changes and commit to the branch
