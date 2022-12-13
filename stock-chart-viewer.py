@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import PySimpleGUI as sg
 import yfinance as yf
 import matplotlib
+from matplotlib import style
 
 #* Variables to take in data from the GUI and pass into the
 #* yahoo finance api .history() method to get the data
@@ -21,17 +22,23 @@ period_value = ''
 interval_value = ''
 plot_type = ''
 
+# Variables to track the figure and the figure agg in order to fix
+# the plot replacement issue
+fig = plt.figure()
+fig_agg = None
+
 # Draws the graph on the PySimpleGUI graph element
 # @param canvas the canvas object in the GUI
 # @param figure the graph being drawn on the canvas
-def draw_figure(graph, figure):
-    figure_canvas_agg = FigureCanvasTkAgg(figure, graph.Widget)
+def draw_figure(canvas, figure):
+    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
     figure_canvas_agg.draw()
     figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
     return figure_canvas_agg
 
-#* Tells matplotlib to use Tkinter Agg
+# Tells matplotlib to use Tkinter Agg and to use the ggplot style
 matplotlib.use('TkAgg')
+style.use("ggplot")
 
 ######################################## GUI Base ##########################################
 
@@ -104,12 +111,10 @@ layout = [
         ),
     ],
     [
-        sg.Graph(
-            canvas_size=(500, 500),
-            graph_bottom_left=(0, 0),
-            graph_top_right=(500, 500),
+        sg.Canvas(
+            size=(500,500),
             background_color='white',
-            key='-GRAPH-',
+            key='-CANVAS-'
         ),
         sg.Button(
             button_text='CLEAR',
@@ -140,6 +145,12 @@ while True:
         break
 
     if event == '-GO-':
+
+        # clears the current figure and forgets the figure agg if one
+        # already exists
+        if fig_agg != None:
+            fig.clf()
+            fig_agg.get_tk_widget().forget()
       
         ticker = values['-TICKER-']
         start_date = values['-START-']
@@ -163,7 +174,11 @@ while True:
             
         fig = plt.gcf()
 
-        draw_figure(window['-GRAPH-'], fig)
+        fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+    
+    if event == '-CLEAR-':
+
+        fig_agg.get_tk_widget().forget()
     
 
 window.close()
