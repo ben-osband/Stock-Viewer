@@ -1,6 +1,6 @@
 # Stock-Ticker
 
-This is a python program that creates a graphical interface that allows the user to view information about the historical prices of stocks. The user can choose:
+In this project, we wrote a python program that creates a graphical interface that allows the user to view information about the historical prices of stocks. The program allows the user to choose:
 
 * What stock they want to look at
 * The start date and end date of data OR the start date and how long of a period to look at
@@ -38,6 +38,12 @@ import matplotlib
     * Used to create the user interface
 4. [yfinance](https://python-yahoofinance.readthedocs.io/en/latest/api.html)
     * Used to get historical data of stock prices
+
+## Contributors
+
+* [Ben Osband](https://github.com/ben-osband)
+* [Alex Sviriduk](https://github.com/ZexyMLG360)
+* [Shayaan P](https://github.com/4PFShay)
 
 ## Making Contributions
 
