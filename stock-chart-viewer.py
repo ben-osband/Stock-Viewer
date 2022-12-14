@@ -1,9 +1,10 @@
 # Benjamin Osband
 # Alexander Sviriduk
 # Shayaan 
-# 12/10/2022
+# 12/13/2022
 # stock-chart-viewer.py
-# description
+# In this project, we wrote a python program that creates a graphical interface 
+# that allows the user to view information about the historical prices of stocks.
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -11,65 +12,148 @@ import PySimpleGUI as sg
 import yfinance as yf
 import matplotlib
 from matplotlib import style
+import csv
 
-#* Variables to take in data from the GUI and pass into the
-#* yahoo finance api .history() method to get the data
-#? What different options can I add
+# Variables to take in data from the GUI and pass into the
+# yahoo finance api .history() method to get the data
 ticker = ''
 start_date = ''
 end_date = ''
 period_value = ''
 interval_value = ''
-plot_type = ''
 
 # Variables to track the figure and the figure agg in order to fix
 # the plot replacement issue
 fig = plt.figure()
 fig_agg = None
 
+# Font variable
+font = 'Helvetica'
+
+# Tells matplotlib to use Tkinter Agg and to use the ggplot style
+matplotlib.use('TkAgg')
+style.use("ggplot")
+
+# Variable to store valid ticker values
+all_tickers = []
+
+# Reads in the all the stock tickers from the nasdaq csv file
+# and adds them to the all_tickers list
+with open('Public/Data/nasdaq_data.csv', 'r') as f:
+    reader = csv.reader(f)
+    amr_csv = list(reader)
+    for line in amr_csv:
+        all_tickers.append(line[0])
+
+#*################################ Helper functions ##################################
+
+# Checks if all the information put in by the user can be used to
+# properly obtain data from the yahoo finance API
+# @param ticker the ticker entered by the user
+# @param start_date the start date entered by the user
+# @param end_date the end date entered by the user
+# @param period the period chosen by the user
+# @param interval the interval chosen by the user
+def checkData(ticker, start_date, end_date):
+    
+    result, msg = checkTicker(ticker)
+
+    if result == False:
+        return result, msg
+    
+    if start_date == '' or end_date == '':
+        return False, 'Missing date or dates'
+    
+    return True, ''
+
+
+# Checks if the ticker is valid
+# @param ticker the ticker symbol put in by the user
+# @return boolean string returns False and a string with a message if the
+#                        ticker is not found in the list
+#                        otherwise, returns True and an empty string
+def checkTicker(ticker):
+    
+    result = ticker in all_tickers
+
+    if result != True:
+        return False, 'Please enter a valid ticker'
+
+    return result, ''
+
+
 # Draws the graph on the PySimpleGUI graph element
 # @param canvas the canvas object in the GUI
 # @param figure the graph being drawn on the canvas
+# @return object the generated figure agg
 def draw_figure(canvas, figure):
     figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
     figure_canvas_agg.draw()
     figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
     return figure_canvas_agg
 
-# Tells matplotlib to use Tkinter Agg and to use the ggplot style
-matplotlib.use('TkAgg')
-style.use("ggplot")
 
-######################################## GUI Base ##########################################
+def plotData(ticker, start_date, end_date, period, interval):
+
+    result, msg = checkData(ticker, start_date, end_date)
+
+    if result == True:
+
+        window['-ERROR-'].update('')
+
+        hist = yf.Ticker(ticker).history(
+            period=period,
+            interval=interval,
+            start=start_date,
+            end=end_date
+        )
+
+        plt.plot(hist)
+
+        plt.title(ticker)
+        plt.xlabel('Date')
+        plt.ylabel('Price')
+
+        fig = plt.gcf()
+
+        return fig
+    
+    else:
+
+        window['-ERROR-'].update(msg)
+
+
+#*####################################### GUI Base ##########################################
 
 layout = [
     [
-        sg.Text('Ticker', font='SYSTEM_DEFAULT'),
+        sg.Text('Ticker', font=font),
         sg.In(
             size=(5, 1),
             default_text='MSFT',
-            font='SYSTEM_DEFAULT',
+            font=font,
             enable_events=True,
             key='-TICKER-',
         ),
-        sg.Text('Start Date', font='SYSTEM_DEFAULT'),
+        sg.Text('Start Date', font=font),
         sg.In(
             default_text='2020-01-01',
             size=(10, 1),
-            font='SYSTEM_DEFAULT',
+            font=font,
             enable_events=True,
             key='-START-',
         ),
-        sg.Text('End Date', font='SYSTEM_DEFAULT'),
+        sg.Text('End Date', font=font),
         sg.In(
             default_text='2021-01-01',
             size=(10, 1),
-            font='SYSTEM_DEFAULT',
+            font=font,
             enable_events=True,
             key='-END-',
         ),
-        sg.Text('Period'),
+        sg.Text('Period', font='SYSTEM_DEFUALT'),
         sg.OptionMenu(values=[
+            'None',
             '1d',
             '5d',
             '1mo',
@@ -78,11 +162,9 @@ layout = [
             '1y',
             '2y',
             '5y',
-            '10y',
-            'ytd',
-            'max'
+            '10y'
         ], default_value='1y', key='-P_MENU-'),
-        sg.Text('Interval'),
+        sg.Text('Interval', font=font),
         sg.OptionMenu(values=[
             '1m',
             '2m',
@@ -98,15 +180,12 @@ layout = [
             '1mo',
             '3mo'
         ], default_value='5d', key='-I_MENU-'),
-        sg.OptionMenu(values=[
-            'line'
-        ], default_value='line', key='-G_MENU-'),
         sg.Button(
             button_text='GO',
             enable_events=True,
-            size=(2, 1),
+            size=(3, 1),
             button_color='green',
-            font='SYSTEM_DEFAULT',
+            font=font,
             key='-GO-',
         ),
     ],
@@ -121,9 +200,11 @@ layout = [
             enable_events=True,
             size=(5, 1),
             button_color='red',
-            font="SYSTEM_DEFAULT",
+            font=font,
             key='-CLEAR-',
         ),
+        sg.VSeperator(color='black'),
+        sg.Text('', font=font, size=(20, 1), key='-ERROR-'),
     ],
 ]
 
@@ -135,7 +216,7 @@ window = sg.Window(
     font = 'Helvetica 18',
 )
 
-###################################### Event Listener ######################################
+#*##################################### Event Listener ######################################
 
 while True:
 
@@ -157,28 +238,14 @@ while True:
         end_date = values['-END-']
         period_value = values['-P_MENU-']
         interval_value = values['-I_MENU-']
-        plot_type = values['-G_MENU-']
 
-        hist = yf.Ticker(ticker).history(
-            period=period_value,
-            interval=interval_value,
-            start=start_date,
-            end=end_date,
-        )
+        figure = plotData(ticker=ticker, start_date=start_date, end_date=end_date, period=period_value, interval=interval_value)
 
-        plt.plot(hist)
-
-        plt.title(ticker)
-        plt.xlabel('Date')
-        plt.ylabel('Price')
-            
-        fig = plt.gcf()
-
-        fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+        fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, figure)
     
     if event == '-CLEAR-':
-
         fig_agg.get_tk_widget().forget()
+        window['-ERROR-'].update('')
     
 
 window.close()
