@@ -25,6 +25,7 @@ import PySimpleGUI as sg
 import yfinance as yf
 import matplotlib
 from matplotlib import style
+import csv
 ```
 
 ### Import Uses
@@ -41,6 +42,8 @@ from matplotlib import style
     * Used to create the user interface
 6. [yfinance](https://python-yahoofinance.readthedocs.io/en/latest/api.html)
     * Used to get historical data of stock prices
+7. [csv](https://docs.python.org/3/library/csv.html)
+    * Used to read in data from the nasdaq csv file
 
 ## Contributors
 
