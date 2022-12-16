@@ -13,13 +13,13 @@ import yfinance as yf
 import matplotlib
 from matplotlib import style
 import csv
+import datetime
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
 ticker = ''
 start_date = ''
 end_date = ''
-period_value = ''
 interval_value = ''
 
 # Variables to track the figure and the figure agg in order to fix
@@ -60,11 +60,26 @@ def checkData(ticker, start_date, end_date):
 
     if result == False:
         return result, msg
+
+    result, msg = checkDates(start_date, end_date)
     
-    if start_date == '' or end_date == '':
-        return False, 'Missing date or dates'
+    if result == False:
+        return result, msg
     
     return True, ''
+
+def checkDateFormat(date):
+
+    date_info = date.split('-')
+
+    year = date_info[0]
+    month = date_info[1]
+    day = date_info[2]
+
+    if len(year) == 4 and len(month) == 2 and len(day) == 2:
+        return True, ''
+    else:
+        return False, 'Invalid date format. Format dates as \'YYYY-MM-DD\''
 
 
 # Checks if the ticker is valid
@@ -77,9 +92,44 @@ def checkTicker(ticker):
     result = ticker in all_tickers
 
     if result != True:
-        return False, 'Please enter a valid ticker'
+        return False, f'{ticker} is not a valid ticker'
 
     return result, ''
+
+
+def checkDates(start_date, end_date):
+
+    if start_date == '' or end_date == '':
+        return False, 'Missing date or dates'
+
+    result, msg = checkDateFormat(start_date)
+
+    if result == False:
+        return result, msg
+    
+    result, msg = checkDateFormat(end_date)
+
+    if result == False:
+        return result, msg
+    
+    start_info = start_date.split('-')
+    end_info = end_date.split('-')
+
+    start_year = int(start_info[0])
+    start_month = int(start_info[1])
+    start_day = int(start_info[2])
+
+    end_year = int(end_info[0])
+    end_month = int(end_info[1])
+    end_day = int(end_info[2])
+
+    start_date_object = datetime.datetime(start_year, start_month, start_day)
+    end_date_object = datetime.datetime(end_year, end_month, end_day)
+
+    if start_date_object > end_date_object:
+        return False, 'Start date must be before end date'
+    
+    return True, ''
 
 
 # Draws the graph on the PySimpleGUI graph element
@@ -93,7 +143,7 @@ def draw_figure(canvas, figure):
     return figure_canvas_agg
 
 
-def plotData(ticker, start_date, end_date, period, interval):
+def plotData(ticker, start_date, end_date, interval):
 
     result, msg = checkData(ticker, start_date, end_date)
 
@@ -102,7 +152,6 @@ def plotData(ticker, start_date, end_date, period, interval):
         window['-ERROR-'].update('')
 
         hist = yf.Ticker(ticker).history(
-            period=period,
             interval=interval,
             start=start_date,
             end=end_date
@@ -151,19 +200,6 @@ layout = [
             enable_events=True,
             key='-END-',
         ),
-        sg.Text('Period', font='SYSTEM_DEFUALT'),
-        sg.OptionMenu(values=[
-            'None',
-            '1d',
-            '5d',
-            '1mo',
-            '3mo',
-            '6mo',
-            '1y',
-            '2y',
-            '5y',
-            '10y'
-        ], default_value='1y', key='-P_MENU-'),
         sg.Text('Interval', font=font),
         sg.OptionMenu(values=[
             '1m',
@@ -204,7 +240,7 @@ layout = [
             key='-CLEAR-',
         ),
         sg.VSeperator(color='black'),
-        sg.Text('', font=font, size=(20, 1), key='-ERROR-'),
+        sg.Text('', font=font, size=(20, 3), key='-ERROR-'),
     ],
 ]
 
@@ -214,6 +250,7 @@ window = sg.Window(
     location = (0, 0),
     finalize = True,
     font = 'Helvetica 18',
+    element_justification='c'
 )
 
 #*##################################### Event Listener ######################################
@@ -236,10 +273,9 @@ while True:
         ticker = values['-TICKER-']
         start_date = values['-START-']
         end_date = values['-END-']
-        period_value = values['-P_MENU-']
         interval_value = values['-I_MENU-']
 
-        figure = plotData(ticker=ticker, start_date=start_date, end_date=end_date, period=period_value, interval=interval_value)
+        figure = plotData(ticker=ticker, start_date=start_date, end_date=end_date, interval=interval_value)
 
         fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, figure)
     

@@ -3,7 +3,7 @@
 In this project, we wrote a python program that creates a graphical interface that allows the user to view information about the historical prices of stocks. The program allows the user to choose:
 
 * What stock they want to look at
-* The start date and end date of data OR the start date and how long of a period to look at
+* The start date and end date of data
 * The interval of data points
 * The type of graph to plot
 
@@ -26,6 +26,7 @@ import yfinance as yf
 import matplotlib
 from matplotlib import style
 import csv
+import datetime
 ```
 
 ### Import Uses
@@ -44,6 +45,8 @@ import csv
     * Used to get historical data of stock prices
 7. [csv](https://docs.python.org/3/library/csv.html)
     * Used to read in data from the [nasdaq csv file](Public/Data/nasdaq_data.csv)
+7. [datetime](https://docs.python.org/3/library/datetime.html)
+    * Used to check the validity of dates entered by the user
 
 ## Contributors
 
