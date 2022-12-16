@@ -68,6 +68,12 @@ def checkData(ticker, start_date, end_date):
     
     return True, ''
 
+
+# Takes in a date and checks if it is formatted correctly
+# @param date the date entered by the user
+# @return boolean string returns True and an empty string if date
+#                        is formatted correctly and False with a
+#                        message if not
 def checkDateFormat(date):
 
     date_info = date.split('-')
@@ -97,6 +103,14 @@ def checkTicker(ticker):
     return result, ''
 
 
+# Checks if the dates gives by the user are valid. Makes sure both dates
+# are not simply empty strings, makes sure they are formatted correctly
+# via checkDateFormat(date) and makes sure the start date comes before the
+# end date.
+# @param start_date the start date entered by the user
+# @param end_date the end date entered by the user
+# @return boolean string returns True and an empty string if dates are valid
+#                        and False with a message if the dates are not valid
 def checkDates(start_date, end_date):
 
     if start_date == '' or end_date == '':
@@ -143,6 +157,10 @@ def draw_figure(canvas, figure):
     return figure_canvas_agg
 
 
+# Takes in all the date entered by the user, checks it via checkData()
+# and then either plots data according to the inputs or displays an
+# error message
+# return object returns the figure object created by matplotlib
 def plotData(ticker, start_date, end_date, interval):
 
     result, msg = checkData(ticker, start_date, end_date)
