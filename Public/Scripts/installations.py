@@ -1,3 +1,9 @@
+# Benjamin Osband
+# 12/18/2022
+# installations.py
+# runs pip commands as subprocesses to make sure pip is upgraded to
+# the latest version and installs all necessary packages and modules
+
 import sys
 import subprocess
 
