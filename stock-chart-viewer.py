@@ -17,7 +17,7 @@ import datetime
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
-ticker = ''
+symbol = ''
 start_date = ''
 end_date = ''
 interval_value = ''
@@ -34,29 +34,30 @@ font = 'Helvetica'
 matplotlib.use('TkAgg')
 style.use("ggplot")
 
-# Variable to store valid ticker values
-all_tickers = []
+# Variable to store valid symbols
+all_symbols = []
 
-# Reads in the all the stock tickers from the nasdaq csv file
-# and adds them to the all_tickers list
+# Reads in the all the stock symbols from the nasdaq csv file
+# and adds them to the all_symbols list
 with open('Public/Data/nasdaq_data.csv', 'r') as f:
     reader = csv.reader(f)
     amr_csv = list(reader)
     for line in amr_csv:
-        all_tickers.append(line[0])
+        all_symbols.append(line[0])
 
 #*################################ Helper functions ##################################
 
 # Checks if all the information put in by the user can be used to
 # properly obtain data from the yahoo finance API
-# @param ticker the ticker entered by the user
+# @param symbol the symbol entered by the user
 # @param start_date the start date entered by the user
 # @param end_date the end date entered by the user
-# @param period the period chosen by the user
 # @param interval the interval chosen by the user
-def checkData(ticker, start_date, end_date):
+# @return boolean string returns False and a message if there is an error with the data
+#                        or True and an empty string if all the data is valid
+def checkData(symbol, start_date, end_date):
     
-    result, msg = checkTicker(ticker)
+    result, msg = checkSymbol(symbol)
 
     if result == False:
         return result, msg
@@ -76,11 +77,15 @@ def checkData(ticker, start_date, end_date):
 #                        message if not
 def checkDateFormat(date):
 
-    date_info = date.split('-')
+    try:
+        date_info = date.split('-')
 
-    year = date_info[0]
-    month = date_info[1]
-    day = date_info[2]
+        year = date_info[0]
+        month = date_info[1]
+        day = date_info[2]
+    
+    except:
+        return False, 'Invalid date format. Format dates as \'YYYY-MM-DD\''
 
     if len(year) == 4 and len(month) == 2 and len(day) == 2:
         return True, ''
@@ -88,19 +93,17 @@ def checkDateFormat(date):
         return False, 'Invalid date format. Format dates as \'YYYY-MM-DD\''
 
 
-# Checks if the ticker is valid
-# @param ticker the ticker symbol put in by the user
+# Checks if the symbol is valid
+# @param symbol the symbol put in by the user
 # @return boolean string returns False and a string with a message if the
-#                        ticker is not found in the list
+#                        symbol is not found in the list
 #                        otherwise, returns True and an empty string
-def checkTicker(ticker):
-    
-    result = ticker in all_tickers
+def checkSymbol(symbol):
 
-    if result != True:
-        return False, f'{ticker} is not a valid ticker'
+    if symbol in all_symbols:
+        return False, f'{symbol} is not a valid symbol'
 
-    return result, ''
+    return True, ''
 
 
 # Checks if the dates gives by the user are valid. Makes sure both dates
@@ -161,15 +164,15 @@ def draw_figure(canvas, figure):
 # and then either plots data according to the inputs or displays an
 # error message
 # return object returns the figure object created by matplotlib
-def plotData(ticker, start_date, end_date, interval):
+def plotData(symbol, start_date, end_date, interval):
 
-    result, msg = checkData(ticker, start_date, end_date)
+    result, msg = checkData(symbol, start_date, end_date)
 
     if result == True:
 
         window['-ERROR-'].update('')
 
-        hist = yf.Ticker(ticker).history(
+        hist = yf.Ticker(symbol).history(
             interval=interval,
             start=start_date,
             end=end_date
@@ -177,7 +180,7 @@ def plotData(ticker, start_date, end_date, interval):
 
         plt.plot(hist)
 
-        plt.title(ticker)
+        plt.title(symbol)
         plt.xlabel('Date')
         plt.ylabel('Price')
 
@@ -194,13 +197,13 @@ def plotData(ticker, start_date, end_date, interval):
 
 layout = [
     [
-        sg.Text('Ticker', font=font),
+        sg.Text('Symbol', font=font),
         sg.In(
             size=(5, 1),
             default_text='MSFT',
             font=font,
             enable_events=True,
-            key='-TICKER-',
+            key='-SYMBOL-',
         ),
         sg.Text('Start Date', font=font),
         sg.In(
@@ -263,7 +266,7 @@ layout = [
 ]
 
 window = sg.Window(
-    'Stock Ticker',
+    'Stock Viewer',
     layout,
     location = (0, 0),
     finalize = True,
@@ -288,12 +291,12 @@ while True:
             fig.clf()
             fig_agg.get_tk_widget().forget()
       
-        ticker = values['-TICKER-']
+        symbol = values['-SYMBOL-']
         start_date = values['-START-']
         end_date = values['-END-']
         interval_value = values['-I_MENU-']
 
-        figure = plotData(ticker=ticker, start_date=start_date, end_date=end_date, interval=interval_value)
+        figure = plotData(symbol=symbol, start_date=start_date, end_date=end_date, interval=interval_value)
 
         fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, figure)
     
