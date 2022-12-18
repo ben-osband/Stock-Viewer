@@ -1,7 +1,7 @@
 # Benjamin Osband
 # Alexander Sviriduk
 # Shayaan 
-# 12/13/2022
+# 12/18/2022
 # stock-chart-viewer.py
 # In this project, we wrote a python program that creates a graphical interface 
 # that allows the user to view information about the historical prices of stocks.
@@ -14,6 +14,10 @@ import matplotlib
 from matplotlib import style
 import csv
 import datetime
+import os
+
+# Makes sure all necesssary packages are installed
+os.system('python Public/Scripts/installations.py')
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
@@ -100,7 +104,7 @@ def checkDateFormat(date):
 #                        otherwise, returns True and an empty string
 def checkSymbol(symbol):
 
-    if symbol in all_symbols:
+    if not symbol in all_symbols:
         return False, f'{symbol} is not a valid symbol'
 
     return True, ''
@@ -248,7 +252,7 @@ layout = [
     ],
     [
         sg.Canvas(
-            size=(500,500),
+            size=(625,425),
             background_color='white',
             key='-CANVAS-'
         ),

@@ -7,7 +7,7 @@ In this project, we wrote a python program that creates a graphical interface th
 * The interval of data points
 * The type of graph to plot
 
-## Packages
+## Core Packages
 
 1. [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
     * Used to create the user interface
@@ -27,6 +27,7 @@ import matplotlib
 from matplotlib import style
 import csv
 import datetime
+import os
 ```
 
 ### Import Uses
@@ -47,6 +48,8 @@ import datetime
     * Used to read in data from the [nasdaq csv file](Public/Data/nasdaq_data.csv)
 7. [datetime](https://docs.python.org/3/library/datetime.html)
     * Used to check the validity of dates entered by the user
+8. [os](https://docs.python.org/3/library/os.html)
+    * Used to run installations.py to make sure all dependencies are satisfied
 
 ## Contributors
 
