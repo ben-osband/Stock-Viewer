@@ -1,11 +1,10 @@
-# Stock-Ticker
+# Stock-Viewer
 
-In this project, we wrote a python program that creates a graphical interface that allows the user to view information about the historical prices of stocks. The program allows the user to choose:
+For this project, we wrote a python program that creates a graphical interface that allows the user to view information about the historical prices of stocks. The program allows the user to choose:
 
 * What stock they want to look at
 * The start date and end date of data
 * The interval of data points
-* The type of graph to plot
 
 ## Core Packages
 

@@ -1,10 +1,10 @@
 # Benjamin Osband
 # Alexander Sviriduk
-# Shayaan 
-# 12/18/2022
+# Shayaan Paracha
+# 1/11/2023
 # stock-chart-viewer.py
-# In this project, we wrote a python program that creates a graphical interface 
-# that allows the user to view information about the historical prices of stocks.
+# This is a python program that creates a graphical interface that 
+# allows the user to view information about the historical prices of stocks.
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -59,7 +59,7 @@ with open('Public/Data/nasdaq_data.csv', 'r') as f:
 # @param interval the interval chosen by the user
 # @return boolean string returns False and a message if there is an error with the data
 #                        or True and an empty string if all the data is valid
-def checkData(symbol, start_date, end_date):
+def checkData(symbol, start_date, end_date, interval):
     
     result, msg = checkSymbol(symbol)
 
@@ -70,8 +70,31 @@ def checkData(symbol, start_date, end_date):
     
     if result == False:
         return result, msg
+
+    result, msg = checkInterval(start_date, end_date, interval)
+
+    if result == False:
+        return result, msg
     
     return True, ''
+
+
+# Breaks down the interval value into a string and a number
+# @param string interval the interval chosen by the user
+# @return int string returns the number in the interval as an integer
+#                    and the string as a string
+def breakInterval(interval):
+
+    num = ''
+    alpha = ''
+
+    for c in interval:
+        if c.isalpha():
+            alpha += c
+        else:
+            num += c
+    
+    return int(num), alpha
 
 
 # Takes in a date and checks if it is formatted correctly
@@ -152,6 +175,51 @@ def checkDates(start_date, end_date):
     
     return True, ''
 
+# Checks if the number of data points (period / interval) is too large
+# @param string start_date the start date entered by the user
+# @param string end_date the end date entered by the user
+# @param string interval the interval entered by the user
+# @return boolean string returns false and an error message if the
+#                        interval is not valid, returns true and
+#                        and empty string otherwise
+def checkInterval(start_date, end_date, interval):
+
+    start_info = start_date.split('-')
+    end_info = end_date.split('-')
+
+    start_year = int(start_info[0])
+    start_month = int(start_info[1])
+    start_day = int(start_info[2])
+
+    end_year = int(end_info[0])
+    end_month = int(end_info[1])
+    end_day = int(end_info[2])
+
+    start_date_object = datetime.datetime(start_year, start_month, start_day)
+    end_date_object = datetime.datetime(end_year, end_month, end_day)
+
+    period = end_date_object - start_date_object
+
+    intervalValue, unit = breakInterval(interval)
+
+    if unit == 'm':
+        intervalValue /= 1440
+    elif unit == 'h':
+        intervalValue /= 24
+    elif unit == 'wk':
+        intervalValue *= 7
+    elif unit == 'mo':
+        intervalValue *= 30
+    
+    numPoints = period.days / intervalValue
+
+    if numPoints > 2000:
+        return False, 'Too short of an interval'
+    elif numPoints < 50:
+        return False, 'Too long of an interval'
+    
+    return True, ''
+
 
 # Draws the graph on the PySimpleGUI graph element
 # @param canvas the canvas object in the GUI
@@ -170,7 +238,7 @@ def draw_figure(canvas, figure):
 # return object returns the figure object created by matplotlib
 def plotData(symbol, start_date, end_date, interval):
 
-    result, msg = checkData(symbol, start_date, end_date)
+    result, msg = checkData(symbol, start_date, end_date, interval)
 
     if result == True:
 
