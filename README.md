@@ -54,7 +54,7 @@ import os
 
 * [Ben Osband](https://github.com/ben-osband)
 * [Alex Sviriduk](https://github.com/ZexyMLG360)
-* [Shayaan P](https://github.com/4PFShay)
+* [Shayaan Paracha](https://github.com/4PFShay)
 
 ## Making Contributions
 

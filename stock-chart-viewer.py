@@ -17,7 +17,7 @@ import datetime
 import os
 
 # Makes sure all necesssary packages are installed
-os.system('python Public/Scripts/installations.py')
+#os.system('python Public/Scripts/installations.py')
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
@@ -36,7 +36,7 @@ font = 'Helvetica'
 
 # Tells matplotlib to use Tkinter Agg and to use the ggplot style
 matplotlib.use('TkAgg')
-style.use("ggplot")
+style.use('grayscale')
 
 # Variable to store valid symbols
 all_symbols = []
@@ -267,6 +267,8 @@ def plotData(symbol, start_date, end_date, interval):
 
 #*####################################### GUI Base ##########################################
 
+sg.theme('Dark2')
+
 layout = [
     [
         sg.Text('Symbol', font=font),
@@ -308,7 +310,7 @@ layout = [
             '1wk',
             '1mo',
             '3mo'
-        ], default_value='5d', key='-I_MENU-'),
+        ], default_value='1d', key='-I_MENU-'),
         sg.Button(
             button_text='GO',
             enable_events=True,
@@ -321,18 +323,17 @@ layout = [
     [
         sg.Canvas(
             size=(625,425),
-            background_color='white',
-            key='-CANVAS-'
+            key='-CANVAS-',
         ),
         sg.Button(
             button_text='CLEAR',
             enable_events=True,
-            size=(5, 1),
+            size=(7, 1),
             button_color='red',
             font=font,
             key='-CLEAR-',
         ),
-        sg.VSeperator(color='black'),
+        sg.VSeperator(),
         sg.Text('', font=font, size=(20, 3), key='-ERROR-'),
     ],
 ]
