@@ -17,7 +17,7 @@ import datetime
 import os
 
 # Makes sure all necesssary packages are installed
-#os.system('python Public/Scripts/installations.py')
+os.system('python Public/Scripts/installations.py')
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
@@ -51,34 +51,6 @@ with open('Public/Data/nasdaq_data.csv', 'r') as f:
 
 #*################################ Helper functions ##################################
 
-# Checks if all the information put in by the user can be used to
-# properly obtain data from the yahoo finance API
-# @param symbol the symbol entered by the user
-# @param start_date the start date entered by the user
-# @param end_date the end date entered by the user
-# @param interval the interval chosen by the user
-# @return boolean string returns False and a message if there is an error with the data
-#                        or True and an empty string if all the data is valid
-def checkData(symbol, start_date, end_date, interval):
-    
-    result, msg = checkSymbol(symbol)
-
-    if result == False:
-        return result, msg
-
-    result, msg = checkDates(start_date, end_date)
-    
-    if result == False:
-        return result, msg
-
-    result, msg = checkInterval(start_date, end_date, interval)
-
-    if result == False:
-        return result, msg
-    
-    return True, ''
-
-
 # Breaks down the interval value into a string and a number
 # @param string interval the interval chosen by the user
 # @return int string returns the number in the interval as an integer
@@ -95,6 +67,21 @@ def breakInterval(interval):
             num += c
     
     return int(num), alpha
+
+
+# Takes in a string that represents a date and converts it
+# to a datetime object
+# @param string date the date being converted
+# @return datetime the object representing the date entered
+def stringToDatetime(date):
+
+    info = date.split('-')
+
+    year = int(info[0])
+    month = int(info[1])
+    day = int(info[2])
+
+    return datetime.datetime(year, month, day)
 
 
 # Takes in a date and checks if it is formatted correctly
@@ -155,25 +142,15 @@ def checkDates(start_date, end_date):
 
     if result == False:
         return result, msg
-    
-    start_info = start_date.split('-')
-    end_info = end_date.split('-')
 
-    start_year = int(start_info[0])
-    start_month = int(start_info[1])
-    start_day = int(start_info[2])
-
-    end_year = int(end_info[0])
-    end_month = int(end_info[1])
-    end_day = int(end_info[2])
-
-    start_date_object = datetime.datetime(start_year, start_month, start_day)
-    end_date_object = datetime.datetime(end_year, end_month, end_day)
+    start_date_object = stringToDatetime(start_date)
+    end_date_object = stringToDatetime(end_date)
 
     if start_date_object > end_date_object:
         return False, 'Start date must be before end date'
     
     return True, ''
+
 
 # Checks if the number of data points (period / interval) is too large
 # @param string start_date the start date entered by the user
@@ -184,19 +161,8 @@ def checkDates(start_date, end_date):
 #                        and empty string otherwise
 def checkInterval(start_date, end_date, interval):
 
-    start_info = start_date.split('-')
-    end_info = end_date.split('-')
-
-    start_year = int(start_info[0])
-    start_month = int(start_info[1])
-    start_day = int(start_info[2])
-
-    end_year = int(end_info[0])
-    end_month = int(end_info[1])
-    end_day = int(end_info[2])
-
-    start_date_object = datetime.datetime(start_year, start_month, start_day)
-    end_date_object = datetime.datetime(end_year, end_month, end_day)
+    start_date_object = stringToDatetime(start_date)
+    end_date_object = stringToDatetime(end_date)
 
     period = end_date_object - start_date_object
 
@@ -217,6 +183,34 @@ def checkInterval(start_date, end_date, interval):
         return False, 'Too short of an interval'
     elif numPoints < 50:
         return False, 'Too long of an interval'
+    
+    return True, ''
+
+
+# Checks if all the information put in by the user can be used to
+# properly obtain data from the yahoo finance API
+# @param symbol the symbol entered by the user
+# @param start_date the start date entered by the user
+# @param end_date the end date entered by the user
+# @param interval the interval chosen by the user
+# @return boolean string returns False and a message if there is an error with the data
+#                        or True and an empty string if all the data is valid
+def checkData(symbol, start_date, end_date, interval):
+    
+    result, msg = checkSymbol(symbol)
+
+    if result == False:
+        return result, msg
+
+    result, msg = checkDates(start_date, end_date)
+    
+    if result == False:
+        return result, msg
+
+    result, msg = checkInterval(start_date, end_date, interval)
+
+    if result == False:
+        return result, msg
     
     return True, ''
 
