@@ -181,7 +181,7 @@ def checkInterval(start_date, end_date, interval):
 
     if numPoints > 2000:
         return False, 'Too short of an interval'
-    elif numPoints < 50:
+    elif numPoints < 20:
         return False, 'Too long of an interval'
     
     return True, ''
