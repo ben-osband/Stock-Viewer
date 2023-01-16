@@ -17,7 +17,7 @@ import datetime
 import os
 
 # Makes sure all necesssary packages are installed
-os.system('python Public/Scripts/installations.py')
+os.system('python installations.py')
 
 # Variables to take in data from the GUI and pass into the
 # yahoo finance api .history() method to get the data
@@ -43,7 +43,7 @@ all_symbols = []
 
 # Reads in the all the stock symbols from the nasdaq csv file
 # and adds them to the all_symbols list
-with open('Public/Data/nasdaq_data.csv', 'r') as f:
+with open('Data/nasdaq_data.csv', 'r') as f:
     reader = csv.reader(f)
     amr_csv = list(reader)
     for line in amr_csv:
