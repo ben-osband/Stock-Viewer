@@ -38,7 +38,7 @@ font = 'Helvetica'
 matplotlib.use('TkAgg')
 style.use('grayscale')
 
-# Variable to store valid symbols
+# List to store valid symbols
 all_symbols = []
 
 # Reads in the all the stock symbols from the nasdaq csv file
